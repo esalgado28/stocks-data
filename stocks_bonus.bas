@@ -7,7 +7,7 @@ Dim ws As Worksheet
 For Each ws In Worksheets
     ws.Select
     Call stocks
-    Call summary_table
+    Call extreme_stocks
 Next
 
 End Sub
@@ -100,9 +100,9 @@ Columns(11).NumberFormat = "0.00%"
 
 End Sub
 
-'this creates the summary table based off result of stocks()
+'this creates a new table based off the result of stocks()
 'finds stocks that saw largest increase in value, largest decrease in value, and the stock traded the most
-Sub summary_table()
+Sub extreme_stocks()
 
 'initialize needed variables
 Dim greatest_increase, greatest_decrease, greatest_volume As Double
