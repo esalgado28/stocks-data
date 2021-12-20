@@ -28,14 +28,9 @@ Columns(12).AutoFit
 Dim ticker As String
 ticker = Cells(2, 1).Value
 
-Dim initial_price As Double
+Dim initial_price, final_price, total_volume As Double
 initial_price = Cells(2, 3).Value
-
-Dim final_price As Double
-final_price = Cells(2, 6)
-
-Dim total_volume As Double
-total_volume = Cells(2, 7)
+total_volume = 0
 
 'this is the starting table row
 Dim table_row As Integer
@@ -45,13 +40,17 @@ table_row = 2
 lastrow = Cells(Rows.Count, 1).End(xlUp).Row
 
 'loop through every row in the raw data
-For i = 3 To lastrow + 1
+For i = 2 To lastrow
 
-    'if ticker doesn't match, we are at new stock or past the end
+    'add to total volume
+    total_volume = total_volume + Cells(i, 7).Value
+
+    'if ticker at next row doesn't match, we are approaching new stock or reached the end
     'calculate desired values and add row to table
-    If (Cells(i, 1) <> ticker) Then
+    If (Cells(i + 1, 1) <> ticker) Then
     
         Cells(table_row, 9).Value = ticker
+        final_price = Cells(i, 6).Value
         Cells(table_row, 10).Value = final_price - initial_price
         
         'format color to indicate wether price increased or decreased
@@ -78,24 +77,18 @@ For i = 3 To lastrow + 1
         Cells(table_row, 12).Value = total_volume
         
         'update/reset variables for next stock
-        ticker = Cells(i, 1).Value
-        initial_price = Cells(i, 3).Value
-        final_price = Cells(i, 6).Value
-        total_volume = Cells(i, 7).Value
+        ticker = Cells(i + 1, 1).Value
+        initial_price = Cells(i + 1, 3).Value
+        total_volume = 0
         
         'move to next row in table
         table_row = table_row + 1
-    
-    'if ticker is the same, update final price and add to total volume
-    Else
-        final_price = Cells(i, 6).Value
-        total_volume = total_volume + Cells(i, 7).Value
         
     End If
 
 Next i
 
-'set number format to percentages for %change column
+'set number format to percentages for % change column
 Columns(11).NumberFormat = "0.00%"
 
 End Sub
